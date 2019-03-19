@@ -5,7 +5,8 @@ import java.util.Arrays;
  * Quicksort, with insertion sort for small segments
  */
 
-public class ConQuick extends Thread{
+//public class ConQuick extends Thread{
+public class ConQuick implements Runnable{
 
   private static int ARRAY_SIZE = 10;
 
@@ -26,7 +27,8 @@ public class ConQuick extends Thread{
       int pivot = partition(lo, hi);
 
       // sort the lower side of the array
-      Thread lowerThread = new ConQuick(a, lo, pivot-1);
+      //Thread lowerThread = new ConQuick(a, lo, pivot-1);
+      Thread lowerThread = new Thread(new ConQuick(a, lo, pivot-1));
       lowerThread.start();
 
       // sort the higher side of the array
