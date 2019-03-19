@@ -11,9 +11,11 @@ class P extends Thread
   public void run()
   {
     while (true) {
-      task1p();
-      s.synch();
-      task2p();
+        synchronized(s){
+            task1p();
+            s.synch();
+            task2p();
+        }
     }
   }
 
@@ -41,9 +43,11 @@ class Q extends Thread
   public void run()
   {
     while (true) {
-      task1q();
-      s.synch();
-      task2q();
+        synchronized(s){
+            task1q();
+            s.synch();
+            task2q();
+        }
     }
   }
 
