@@ -8,7 +8,7 @@ import java.util.Arrays;
 //public class ConQuick extends Thread{
 public class ConQuick implements Runnable{
 
-  private static int ARRAY_SIZE = 10;
+  private static int ARRAY_SIZE = 200000;
 
   private int [] a;
   private int lo, hi;
@@ -113,13 +113,13 @@ public class ConQuick implements Runnable{
 
     // populate the array with random integers
     for(int i = 0; i < a.length; i++) {
-      a[i] = rand.nextInt(30);
+      a[i] = rand.nextInt();
     }
 
     //sort the array
     new ConQuick(a, 0, a.length-1).quicksort();
   
-    System.out.println(java.util.Arrays.toString(a));
+    //System.out.println(java.util.Arrays.toString(a));
   }
 
   @Override

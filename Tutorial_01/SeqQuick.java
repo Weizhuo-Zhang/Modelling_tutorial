@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class SeqQuick {
 
-  private static int ARRAY_SIZE = 2000; 
+  private static int ARRAY_SIZE = 200000;
 
   private int [] a;
   private int lo, hi;
@@ -102,7 +102,7 @@ public class SeqQuick {
     //create an array 
     int [] a = new int[ARRAY_SIZE];
     Random rand = new Random();
-    
+
     // populate the array with random integers
     for(int i = 0; i < a.length; i++) {
       a[i] = rand.nextInt();
@@ -111,6 +111,6 @@ public class SeqQuick {
     //sort the array
     new SeqQuick(a, 0, a.length-1).quicksort();
   
-    System.out.println(java.util.Arrays.toString(a));
+    //System.out.println(java.util.Arrays.toString(a));
   }
 }

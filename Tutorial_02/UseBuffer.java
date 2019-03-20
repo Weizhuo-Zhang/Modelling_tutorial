@@ -1,7 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.Semaphore;
 
 /**
  * A bounded buffer maintains a fixed number of "slots". Items can be
@@ -9,45 +8,40 @@ import java.util.concurrent.Semaphore;
  * size.
  */
 
-class BoundedBuffer
-{
-  // the maximum size of the bounded buffer
-  final public static int MAXSIZE = 10;
+class BoundedBuffer {
+    // the maximum size of the bounded buffer
+    final public static int MAXSIZE = 10;
 
-  // the buffer
-  List<Integer> buffer;
+    // the buffer
+    volatile List<Integer> buffer;
 
-  private volatile int bufferSize;
-  private Semaphore semaphore = new Semaphore(3);
-
-  public BoundedBuffer()
-  {
-    buffer = new ArrayList<Integer>();
-    bufferSize = 0;
-  }
-
-  // add an element to the end of the buffer if it is not full
-  public synchronized void put(int input)
-    throws InterruptedException
-  {
-    if (buffer.size() < MAXSIZE) {
-      buffer.add(input);
+    public BoundedBuffer() {
+        buffer = new ArrayList<Integer>();
     }
-  }
 
-  // take an element from the front of the buffer
-  public synchronized int get()
-    throws InterruptedException
-  {
-    int result = buffer.remove(0);
-    return result;
-  }
+    // add an element to the end of the buffer if it is not full
+    public synchronized void put(int input)
+            throws InterruptedException {
+        if (buffer.size() < MAXSIZE) {
+            buffer.add(input);
+        } else {
+            wait();
+        }
+    }
 
-  public synchronized int size()
-  {
-    bufferSize = buffer.size();
-    return bufferSize;
-  }
+    // take an element from the front of the buffer
+    public synchronized int get()
+            throws InterruptedException {
+        if (0 == buffer.size()) {
+            wait();
+        }
+        int result = buffer.remove(0);
+        return result;
+    }
+
+    public synchronized int size() {
+        return buffer.size();
+    }
 }
 
 /**
@@ -55,37 +49,34 @@ class BoundedBuffer
  * intervals, and inserts them into a bounded buffer.
  */
 
-class Producer extends Thread
-{
-  // the buffer in which to insert new integers
-  BoundedBuffer buffer;
+class Producer extends Thread {
+    // the buffer in which to insert new integers
+    BoundedBuffer buffer;
 
-  public Producer(BoundedBuffer buffer)
-  {
-    this.buffer = buffer;
-  }
-
-  public void run()
-  {
-    Random random = new Random();
-
-    try {
-      while (true) {
-
-	//insert a random integer
-	int next = random.nextInt();
-	buffer.put(next);
-
-	//sleep for a random period between
-	//0 and 99 milliseconds
-	int sleep = random.nextInt(10);
-	Thread.sleep(sleep);
-
-	System.err.println("b.size() = " + buffer.size());
-      }
+    public Producer(BoundedBuffer buffer) {
+        this.buffer = buffer;
     }
-    catch (InterruptedException e) {}
-  }
+
+    public void run() {
+        Random random = new Random();
+
+        try {
+            while (true) {
+
+                //insert a random integer
+                int next = random.nextInt();
+                buffer.put(next);
+
+                //sleep for a random period between
+                //0 and 99 milliseconds
+                int sleep = random.nextInt(10);
+                Thread.sleep(sleep);
+
+                System.err.println("b.size() = " + buffer.size());
+            }
+        } catch (InterruptedException e) {
+        }
+    }
 }
 
 /**
@@ -93,47 +84,42 @@ class Producer extends Thread
  * buffer at random intervals.
  */
 
-class Consumer extends Thread
-{
-  // the buffer in which to insert new integers
-  BoundedBuffer buffer;
+class Consumer extends Thread {
+    // the buffer in which to insert new integers
+    BoundedBuffer buffer;
 
-  public Consumer(BoundedBuffer buffer)
-  {
-    this.buffer = buffer;
-  }
-
-  public void run()
-  {
-    Random random = new Random();
-
-    try {
-      while (true) {
-
-	//get the next integer from the buffer
-	int next = buffer.get();
-
-	System.err.println("next = " + next);
-
-	//sleep for a random period between
-	//0 and 49 milliseconds
-	int sleep = random.nextInt(50);
-	Thread.sleep(sleep);
-      }
+    public Consumer(BoundedBuffer buffer) {
+        this.buffer = buffer;
     }
-    catch (InterruptedException e) {}
-  }
+
+    public void run() {
+        Random random = new Random();
+
+        try {
+            while (true) {
+
+                //get the next integer from the buffer
+                int next = buffer.get();
+
+                System.err.println("next = " + next);
+
+                //sleep for a random period between
+                //0 and 49 milliseconds
+                int sleep = random.nextInt(50);
+                Thread.sleep(sleep);
+            }
+        } catch (InterruptedException e) {
+        }
+    }
 }
 
-public class UseBuffer
-{
-  public static void main(String [] args)
-  {
-    BoundedBuffer buffer = new BoundedBuffer();
-    Producer p = new Producer(buffer);
-    Consumer c = new Consumer(buffer);
+public class UseBuffer {
+    public static void main(String[] args) {
+        BoundedBuffer buffer = new BoundedBuffer();
+        Producer p = new Producer(buffer);
+        Consumer c = new Consumer(buffer);
 
-    p.start();
-    c.start();
-  }
+        p.start();
+        c.start();
+    }
 }

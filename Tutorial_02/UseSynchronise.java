@@ -11,11 +11,9 @@ class P extends Thread
   public void run()
   {
     while (true) {
-        synchronized(s){
-            task1p();
-            s.synch();
-            task2p();
-        }
+      task1p();
+      s.synch();
+      task2p();
     }
   }
 
@@ -43,11 +41,9 @@ class Q extends Thread
   public void run()
   {
     while (true) {
-        synchronized(s){
-            task1q();
-            s.synch();
-            task2q();
-        }
+      task1q();
+      s.synch();
+      task2q();
     }
   }
 
@@ -65,10 +61,20 @@ class Q extends Thread
 class Synchronise
 {
   // any useful variables go here
+  private volatile boolean syncFlag = false;
 
   public synchronized void synch()
   {
     // the code to synchronise goes here
+    try {
+      if (false == syncFlag) {
+        syncFlag = true;
+        wait();
+      } else {
+        notifyAll();
+        syncFlag = false;
+      }
+    } catch (InterruptedException e) { }
   }
 }
 

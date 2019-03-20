@@ -1,7 +1,7 @@
 class Count extends Thread {
 
     // number of increments per thread
-    static int N = 1000;
+    static int N = 100000;
 
     // shared data
     static volatile int counter = 0;
