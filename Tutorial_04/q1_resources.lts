@@ -1,0 +1,15 @@
+const N = 5
+range T = 1..N
+RESOURCE = (acquire -> release -> RESOURCE).
+USER = (acquire -> use -> release -> USER).
+
+//||ONE = (a:RESOURCE || b:RESOURCE).
+//||TWO = ({a,b}::RESOURCE).
+
+//||RESOURCE_SHARE = (a:USER || b:USER || {a,b}::RESOURCE).
+//||RESOURCE_SHAREv2 = (a:USER || b:USER || a:RESOURCE || b:RESOURCE).
+
+// Question 3
+||RESOURCE_SHAREv3 = (users[T]:USER || {users[T]}::RESOURCE).
+
+

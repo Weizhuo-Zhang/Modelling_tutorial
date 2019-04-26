@@ -1,0 +1,7 @@
+ACTUATOR = (command -> ACT).
+ACT = (respond -> ACTUATOR | command -> ACTUATOR).
+
+property P_CHECK = (command -> respond -> P_CHECK).
+
+|| SAFT_ACT = (ACTUATOR || P_CHECK).
+

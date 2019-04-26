@@ -1,0 +1,3 @@
+COIN =
+	( heads -> win  -> COIN
+	| tails -> lose -> COIN).

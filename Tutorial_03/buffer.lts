@@ -1,0 +1,6 @@
+const N = 4
+range T = 0..N
+
+BUFFER = BUFF[0],
+BUFF[i:T] = (when (i>0) get -> BUFF[i-1]
+			|when (i<N) put -> BUFF[i+1]).

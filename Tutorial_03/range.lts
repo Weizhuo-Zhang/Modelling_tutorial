@@ -1,0 +1,6 @@
+const NUM = 4
+
+SQUARE(N = NUM) = BUFF[1],
+BUFF[i:1..N*N] =
+	( when (i <= N) square -> BUFF[i*i]
+	).

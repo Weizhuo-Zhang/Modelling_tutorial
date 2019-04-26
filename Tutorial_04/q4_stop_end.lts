@@ -1,0 +1,3 @@
+ONESHOT_STOP = (once -> STOP).
+//ONESHOT_ERROR = (once -> ERROR).
+//ONESHOT_END = (once -> END).
