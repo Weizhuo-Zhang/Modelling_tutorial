@@ -9,9 +9,11 @@ import (
     "time"
 )
 
-const N = 100  // length of input character string
-const MAX = 9   // max number of repeats to allow
+const N = 10  // length of input character string
+const MAX = 2   // max number of repeats to allow
 const K = 40    // line length for output string
+const ZERO = 0
+const ONE = 1
 
 // function to compress a sequence of repeated characters
 // received from inC and send result to outC
@@ -19,24 +21,47 @@ const K = 40    // line length for output string
 func compress(inC <-chan string, pipe chan<- string) {
     c := ""  // current character
     previous := "" // previous character
-    n := 0  // counter for repeats of current character
+    n := ZERO // counter for repeats of current character
     previous = <-inC  // get first character
-    for {
-
+    for i := ONE; i < N;i++{
         // TODO
-
+        c = <-inC
+        n++
+        if c != previous {
+            if ONE == n {
+                pipe <- previous
+            } else {
+                pipe <- strconv.Itoa(n)
+                pipe <- previous
+            }
+           	n = ZERO
+        } else {
+            if MAX == n {
+                pipe <- strconv.Itoa(n)
+                pipe <- previous
+                n = ZERO
+            }
+        }
+        previous = c
     }
+    pipe <- strconv.Itoa(n+1)
+    pipe <- previous
 }
 
 // function to format a compressed sequence of characters
 // printing K to a line
 func output(pipe <-chan string, outC chan<- string) {
     c := ""  // current character
-    n := 0  // counter for characters on current line
+    n := ZERO  // counter for characters on current line
     for {
-
         // TODO
-
+        c = <- pipe
+        if K == n {
+            outC <- "\n"
+            n = ZERO
+        }
+        n++
+        outC <- c
     }
 }
 
